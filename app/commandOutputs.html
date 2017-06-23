@@ -1,0 +1,41 @@
+<!-- Nav tabs -->
+<ul class="nav nav-tabs" role="tablist">
+    <!--    <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Home</a></li>
+    <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Profile</a></li>-->
+
+    {{#each commandOutputs}}
+    <li role="presentation"><a href="#{{time}}" aria-controls="{{time}}" role="tab" data-toggle="tab">{{title}}</a></li>
+    {{/each}}
+</ul>
+
+<!-- Tab panes -->
+<div class="tab-content">
+    <!--    <div role="tabpanel" class="tab-pane active" id="home">...</div>
+    <div role="tabpanel" class="tab-pane" id="profile">...</div>-->
+
+    {{#each commandOutputs}}
+    <div role="tabpanel" class="tab-pane" id="{{time}}">
+
+        <div class="panel panel-warning">
+            <div class="panel-heading">std Error</div>
+            <div class="panel-body">
+                {{stderr}}
+            </div>
+        </div>
+
+        <div class="panel panel-danger">
+            <div class="panel-heading">Error</div>
+            <div class="panel-body">
+                {{error}}
+            </div>
+        </div>
+
+        <div class="panel panel-info">
+            <div class="panel-heading">std Out</div>
+            <div class="panel-body">
+                {{stdout}}
+            </div>
+        </div>
+    </div>
+    {{/each}}
+</div>

@@ -1,0 +1,24 @@
+{
+    "name": "CityStateDevKit",
+    "version": "1.0.0",
+    "description": "tools kit for f2e develop",
+    "main": "main.js",
+    "scripts": {
+        "start": "electron .",
+        "tsc": "tsc",
+        "build": "electron-packager . --win32"
+    },
+    "author": "CityState",
+    "dependencies": {
+        "@types/node": "latest",
+        "moment": "latest",
+        "systemjs": "0.19.40",
+        "handlebars": "latest"
+    },
+    "devDependencies": {
+        "typescript": "~2.1.0",
+        "rimraf": "latest",
+        "electron": "latest",
+        "electron-packager": "latest"
+    }
+}

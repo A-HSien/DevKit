@@ -1,0 +1,26 @@
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>名稱</th>
+                <th>路徑</th>
+                <th>可執行腳本</th>
+                <th>多語系檔</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each projects}}
+            <tr>
+                <td>{{name}}</td>
+                <td>{{path}}</td>
+                <td data-path="{{path}}">
+                    <button class="btn btn-default btn-xs js-executeCommand js-isBuiltInCommand">install</button>
+                    <button class="btn btn-default btn-xs js-executeCommand js-isBuiltInCommand">update</button> {{#each scripts}}
+                    <button class="btn btn-default btn-xs js-executeCommand">{{command}}</button> {{/each}}
+                </td>
+                <td><button class="btn btn-default btn-xs">編輯</button></td>
+            </tr>
+            {{/each}}
+    </table>
+    </tbody>
+</div>

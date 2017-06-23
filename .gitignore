@@ -1,0 +1,8 @@
+#directories
+node_modules/
+.vscode/
+CityStateDevKit-win32-x64/
+
+#files
+*.tgz
+*.log

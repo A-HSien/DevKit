@@ -1,0 +1,25 @@
+﻿{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "system",
+    "moduleResolution": "node",
+    "sourceMap": false,
+    "inlineSourceMap": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "lib": [ "es2015", "dom" ],
+    "types": [ "node" ],
+    "noImplicitAny": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "noUnusedLocals": true,
+    "allowJs": true,
+    "typeRoots": [
+      "../node_modules/@types/"
+    ]
+  },
+  "exclude": [
+    "CityStateDevKit-win32-x64",
+    "node_modules",
+    "**/*.js"
+  ]
+}

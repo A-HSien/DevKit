@@ -1,5 +1,5 @@
 ﻿
 
-import { AppViewModele } from './AppViewModele';
+import { AppViewModel } from './AppViewModel';
 
-new AppViewModele();
+new AppViewModel();

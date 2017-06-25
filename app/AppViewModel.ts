@@ -3,19 +3,20 @@ declare const Electron: any;
 declare const $: any;
 declare const Handlebars: any;
 
+import { Project, CommandOutput } from './Models';
 
-interface Script {
-  command: string;
-  content: string;
+
+class HandlebarsHelper {
+  static compileView(selector: string, templateUrl: string, model: any) {
+    $.get(templateUrl, (source: string) => {
+      const template = Handlebars.compile(source);
+      const html = template(model);
+      $(selector).html(html);
+    });
+  };
 };
 
-interface Project {
-  path: string;
-  scripts: Script[];
-};
-
-
-export class AppViewModele {
+export class AppViewModel {
 
   private workingFolder: string = '';
   private projects: Project[] = [];
@@ -69,19 +70,15 @@ export class AppViewModele {
       return setting;
     });
 
-    $.get('app/projectPanel.html', (source: string) => {
-      const template = Handlebars.compile(source);
-      const html = template(this);
-      $('#projectPanel').html(html);
-    });
+    HandlebarsHelper.compileView('#projectPanel', 'app/projectPanel.html', this);
   };
+
 
 
   private executeCommand($event: any) {
     const $target = $($event.currentTarget);
     let command = $target.html();
-    const $parent = $target.parent();
-    const path = $parent.data('path');
+    const path = this.getProjectData($target, 'path');
     if (!command || !path) return;
 
     if ($target.hasClass('js-isBuiltInCommand')) {
@@ -94,6 +91,13 @@ export class AppViewModele {
     const executeCommand = Electron.remote.require('./nodeScripts/executeCommand');
     executeCommand(command, [path], true, this.commandCallback.bind(this));
     return;
+  };
+
+
+  private getProjectData($target: any, propName: string): string {
+    const $tr = $target.parent().parent();
+    const data = $tr.data(propName);
+    return data;
   };
 
 
@@ -129,13 +133,10 @@ export class AppViewModele {
     this.commandOutputs.unshift(new CommandOutput(error, stdout, stderr));
 
     this.commandOutputsWindowTask = setTimeout(() => {
-      $.get('app/commandOutputs.html', (source: string) => {
-        const template = Handlebars.compile(source);
-        const html = template(this);
-        $('.js-commandOutputs').html(html);
-      });
+      HandlebarsHelper.compileView('.js-commandOutputs', 'app/commandOutputs.html', this);
     }, 1000);
   };
+
 
   private addToScriptFilter() {
     const scriptFilterToAdd = $('.js-scriptFilterToAdd').val();
@@ -145,12 +146,14 @@ export class AppViewModele {
     this.createScriptFilterListView();
   };
 
+
   private deleteFromScriptFilterList(event: Event) {
     const target: any = $(event.currentTarget).text().trim();
     this.scriptFilterList = this.scriptFilterList.filter(e => e !== target);
 
     this.createScriptFilterListView();
   };
+
 
   private createScriptFilterListView() {
     const buttons = this.scriptFilterList.map(e => {
@@ -160,6 +163,7 @@ export class AppViewModele {
 
     this.filterScripts();
   };
+
 
   private filterScripts() {
     const $allCommand = $('#projectPanel .js-executeCommand');
@@ -174,13 +178,51 @@ export class AppViewModele {
         }
       });
     });
+  };
 
+
+  private editResourceFile($event: any) {
+    const $target = $($event.currentTarget);
+    const name = this.getProjectData($target, 'name');
+    const path = this.getProjectData($target, 'path');
+
+    const resx = new ResourceViewModel(name);
+
+    const importResx = (object: any, resx: ResourceViewModel, propName: string) => {
+      Object.keys(object).forEach(key => {
+        const value: string = object[key];
+        let target = resx.resources.find(m => m.key === key);
+        if (!target) {
+          target = new Resource(key, '', '');
+          resx.resources.push(target);
+        }
+        target[propName] = value;
+      });
+    };
+
+
+    $.getScript(`${path}/resources/resource.zh-TW.js`).done(
+      (script: any, textStatus: any) => {
+        const zh = (window as any).resource;
+        importResx(zh, resx, 'zh');
+        resx.compileView();
+      }
+    );
+
+    $.getScript(`${path}/resources/resource.en-US.js`).done(
+      (script: any, textStatus: any) => {
+        const en = (window as any).resource;
+        importResx(en, resx, 'en');
+        resx.compileView();
+      }
+    );
   };
 
 
   constructor() {
     $('.folderSelector').on('click', this.selectFolder.bind(this));
     $('#projectPanel').on('click', '.js-executeCommand', this.executeCommand.bind(this));
+    $('#projectPanel').on('click', '.js-editResourceFile', this.editResourceFile.bind(this));
     $('.js-globeCommand').on('click', 'button', this.executeGlobeCommand.bind(this));
     $('.js-addToScriptFilter').on('click', this.addToScriptFilter.bind(this));
     $('.js-scriptFilterList').on('click', '.js-deleteFromScriptFilterList', this.deleteFromScriptFilterList.bind(this));
@@ -191,16 +233,24 @@ export class AppViewModele {
 
 
 
-class CommandOutput {
-  title: string;
-  time: number;
+
+class ResourceViewModel {
+  resources: Resource[] = [];
 
   constructor(
-    public error: string,
-    public stdout: string,
-    public stderr: string
-  ) {
-    this.title = new Date().toLocaleString();
-    this.time = Date.now();
+    public projectName: string
+  ) { };
+
+  compileView() {
+    HandlebarsHelper.compileView('#resourcesEditor', 'app/resourcesEditor.html', this);
   };
+};
+
+class Resource {
+
+  constructor(
+    public key: string,
+    public zh: string,
+    public en: string
+  ) { };
 };

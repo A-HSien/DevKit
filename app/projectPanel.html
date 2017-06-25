@@ -10,15 +10,15 @@
         </thead>
         <tbody>
             {{#each projects}}
-            <tr>
+            <tr data-name="{{name}}" data-path="{{path}}">
                 <td>{{name}}</td>
                 <td>{{path}}</td>
-                <td data-path="{{path}}">
+                <td>
                     <button class="btn btn-default btn-xs js-executeCommand js-isBuiltInCommand">install</button>
                     <button class="btn btn-default btn-xs js-executeCommand js-isBuiltInCommand">update</button> {{#each scripts}}
                     <button class="btn btn-default btn-xs js-executeCommand">{{command}}</button> {{/each}}
                 </td>
-                <td><button class="btn btn-default btn-xs">編輯</button></td>
+                <td><button class="btn btn-default btn-xs js-editResourceFile">編輯</button></td>
             </tr>
             {{/each}}
     </table>

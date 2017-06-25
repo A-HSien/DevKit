@@ -1,0 +1,15 @@
+{
+    "name": "demo",
+    "version": "1.0.0",
+    "description": "demo project for f2e develop",
+    "main": "main.js",
+    "scripts": {
+        "node": "node -v",
+        "npm": "npm -v"
+    },
+    "author": "CityState",
+    "dependencies": {
+    },
+    "devDependencies": {
+    }
+}

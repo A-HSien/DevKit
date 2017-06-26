@@ -6,7 +6,7 @@
     "scripts": {
         "start": "electron .",
         "tsc": "tsc",
-        "build": "electron-packager . --win32"
+        "build": "rimraf ./CityStateDevKit-win32-x64 & electron-packager . --win32"
     },
     "author": "CityState",
     "dependencies": {

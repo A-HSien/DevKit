@@ -201,17 +201,17 @@ export class AppViewModel {
     };
 
 
-    $.getScript(`${path}/resources/resource.zh-TW.js`).done(
+    $.getScript(`${path}resources/resources.zh-TW.js`).done(
       (script: any, textStatus: any) => {
-        const zh = (window as any).resource;
+        const zh = (window as any).iBank.resources;
         importResx(zh, resx, 'zh');
         resx.compileView();
       }
     );
 
-    $.getScript(`${path}/resources/resource.en-US.js`).done(
+    $.getScript(`${path}resources/resources.en-US.js`).done(
       (script: any, textStatus: any) => {
-        const en = (window as any).resource;
+        const en = (window as any).iBank.resources;
         importResx(en, resx, 'en');
         resx.compileView();
       }

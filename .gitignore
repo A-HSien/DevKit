@@ -2,6 +2,7 @@
 node_modules/
 .vscode/
 CityStateDevKit-win32-x64/
+publish/
 
 #files
 *.tgz

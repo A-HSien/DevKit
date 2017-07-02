@@ -1,6 +1,11 @@
-<p>專案名稱： {{projectName}}</p>
+<p>
+    專案名稱： {{projectName}}<br>
+    <button class="js-save btn btn-info btn-xs">存檔</button>
+    <button class="js-exportCSV btn btn-info btn-xs">輸出CSV</button>
+    <button class="js-compareSelector btn btn-info btn-xs">檔案比對</button>
+</p>
 <div class="table-responsive">
-    <table class="table table-striped">
+    <table class="table table-striped js-resourcesTable">
         <thead>
             <tr>
                 <th>key</th>

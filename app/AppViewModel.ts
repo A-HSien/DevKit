@@ -1,20 +1,12 @@
 
 declare const Electron: any;
 declare const $: any;
-declare const Handlebars: any;
 
+import { CommonUtility } from './CommonUtility';
 import { Project, CommandOutput } from './Models';
+import { ResourceEditorViewModel, Resource } from './ResourceEditorViewModel';
 
 
-class HandlebarsHelper {
-  static compileView(selector: string, templateUrl: string, model: any) {
-    $.get(templateUrl, (source: string) => {
-      const template = Handlebars.compile(source);
-      const html = template(model);
-      $(selector).html(html);
-    });
-  };
-};
 
 export class AppViewModel {
 
@@ -70,7 +62,7 @@ export class AppViewModel {
       return setting;
     });
 
-    HandlebarsHelper.compileView('#projectPanel', 'app/projectPanel.html', this);
+    CommonUtility.compileView('#projectPanel', 'app/projectPanel.html', this);
   };
 
 
@@ -133,7 +125,7 @@ export class AppViewModel {
     this.commandOutputs.unshift(new CommandOutput(error, stdout, stderr));
 
     this.commandOutputsWindowTask = setTimeout(() => {
-      HandlebarsHelper.compileView('.js-commandOutputs', 'app/commandOutputs.html', this);
+      CommonUtility.compileView('.js-commandOutputs', 'app/commandOutputs.html', this);
     }, 1000);
   };
 
@@ -186,9 +178,9 @@ export class AppViewModel {
     const name = this.getProjectData($target, 'name');
     const path = this.getProjectData($target, 'path');
 
-    const resx = new ResourceViewModel(name);
+    const resx = new ResourceEditorViewModel(name);
 
-    const importResx = (object: any, resx: ResourceViewModel, propName: string) => {
+    const importResx = (object: any, resx: ResourceEditorViewModel, propName: string) => {
       Object.keys(object).forEach(key => {
         const value: string = object[key];
         let target = resx.resources.find(m => m.key === key);
@@ -200,22 +192,18 @@ export class AppViewModel {
       });
     };
 
+    const loadResource = (filePath: string, propName: string) => {
+      $.getScript(filePath).done(
+        (script: any, textStatus: any) => {
+          const resources = (window as any).iBank.resources;
+          importResx(resources, resx, propName);
+          resx.compileView();
+        }
+      );
+    };
 
-    $.getScript(`${path}resources/resources.zh-TW.js`).done(
-      (script: any, textStatus: any) => {
-        const zh = (window as any).iBank.resources;
-        importResx(zh, resx, 'zh');
-        resx.compileView();
-      }
-    );
-
-    $.getScript(`${path}resources/resources.en-US.js`).done(
-      (script: any, textStatus: any) => {
-        const en = (window as any).iBank.resources;
-        importResx(en, resx, 'en');
-        resx.compileView();
-      }
-    );
+    loadResource(`${path}resources/resources.zh-TW.js`, 'zh');
+    loadResource(`${path}resources/resources.en-US.js`, 'en');
   };
 
 
@@ -229,28 +217,4 @@ export class AppViewModel {
 
     this.createScriptFilterListView();
   };
-};
-
-
-
-
-class ResourceViewModel {
-  resources: Resource[] = [];
-
-  constructor(
-    public projectName: string
-  ) { };
-
-  compileView() {
-    HandlebarsHelper.compileView('#resourcesEditor', 'app/resourcesEditor.html', this);
-  };
-};
-
-class Resource {
-
-  constructor(
-    public key: string,
-    public zh: string,
-    public en: string
-  ) { };
 };

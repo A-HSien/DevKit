@@ -1,5 +1,6 @@
 !function () {
-    window.resource = {
+    window.iBank = {};
+    window.iBank.resources = {
         key1: 'zh1',
         key2: 'zh2',
         key3: 'zh3',
